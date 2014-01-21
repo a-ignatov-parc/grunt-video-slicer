@@ -1,0 +1,40 @@
+{
+  "name": "grunt-video-slicer",
+  "description": "Grunt task for cutting video into sections by setted time ranges",
+  "keywords": [
+    "gruntplugin",
+    "ffmpeg",
+    "video"
+  ],
+  "version": "0.1.0",
+  "homepage": "https://github.com/a-ignatov-parc/grunt-video-slicer",
+  "author": {
+    "name": "Anton Ignatov",
+    "email": "abietis@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/a-ignatov-parc/grunt-video-slicer"
+  },
+  "bugs": {
+    "url": "https://github.com/a-ignatov-parc/grunt-video-slicer/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/a-ignatov-parc/grunt-video-slicer/blob/master/LICENSE"
+    }
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "grunt": "0.4.x",
+    "grunt-cli": "0.1.x",
+    "mime": "1.2.x",
+    "ffmpeg-node": "0.0.1",
+    "underscore": "~1.5.2",
+    "async": "~0.2.9"
+  }
+}
