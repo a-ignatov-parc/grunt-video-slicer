@@ -57,6 +57,7 @@ module.exports = function(grunt) {
 				mp4: {
 					'-strict': 'experimental',
 					'-f': 'mp4',
+					'-movflags': 'faststart',
 					'-vcodec': 'libx264',
 					'-acodec': 'aac',
 					'-ab': '160000',
