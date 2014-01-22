@@ -11,7 +11,7 @@ If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out th
 npm install grunt-video-slicer --save-dev
 ```
 
-Additionally, this plugin requries ffmpeg with libx264 and libvpx to encode .mp4 and .webm, which are common HTML5 codecs, and required for the unit tests.
+Additionally, this plugin requries `ffmpeg` with `libx264` and `libvpx` to encode `.mp4` and `.webm`, which are common HTML5 codecs.
 ```shell
 brew install ffmpeg --with-libvorbis --with-nonfree --with-gpl --with-libvpx --with-pthreads --with-libx264 --with-libfaac --with-theora --with-libogg
 ```
@@ -106,11 +106,7 @@ Example:
 #### options.emptyDestBeforeStart
 Type: `Boolean`
 
-Default value:
-
-```js
-false
-```
+Default value: `false`
 
 The value that specifies should task empty destination folder before start encoding.
 
