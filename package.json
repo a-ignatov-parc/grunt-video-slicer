@@ -1,6 +1,6 @@
 {
   "name": "grunt-video-slicer",
-  "description": "Grunt task for cutting video into sections by setted time ranges",
+  "description": "Grunt task for cutting video into sections by specified time ranges",
   "keywords": [
     "gruntplugin",
     "ffmpeg",

@@ -1,6 +1,6 @@
 # grunt-video-slicer
 
-> Grunt task for cutting video into sections by setted time ranges
+> Grunt task for cutting video into sections by specified time ranges
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
