@@ -1,4 +1,178 @@
-grunt-video-slicer
-==================
+# grunt-video-slicer
 
-Grunt task for cutting video into sections by setted time ranges
+> Grunt task for cutting video into sections by setted time ranges
+
+## Getting Started
+This plugin requires Grunt `~0.4.1`
+
+If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
+
+```shell
+npm install grunt-video-slicer --save-dev
+```
+
+Additionally, this plugin requries ffmpeg with libx264 and libvpx to encode .mp4 and .webm, which are common HTML5 codecs, and required for the unit tests.
+```shell
+brew install ffmpeg --with-libvorbis --with-nonfree --with-gpl --with-libvpx --with-pthreads --with-libx264 --with-libfaac --with-theora --with-libogg
+```
+
+Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
+
+```js
+grunt.loadNpmTasks('grunt-video-slicer');
+```
+
+## The "video_slicer" task
+
+### Overview
+
+The `video_slicer` task will take source video and cut it in any number of video clips you defined in options. Clips will be encoded in `*.mp4` and `*.webm` to be fully supported with html5 video tag.
+
+In your project's Gruntfile, add a section named `video_slicer` to the data object passed into `grunt.initConfig()`.
+
+```js
+grunt.initConfig({
+  video_slicer: {
+    options: {
+      // Task-specific options go here.
+    },
+    my_target: {
+      src: 'src/video.mp4',
+      dest: 'dest_folder/'
+    }
+  }
+})
+```
+
+### Options
+
+#### options.sections
+Type: `Array`
+
+Default value:
+
+```js
+[{
+  name: 'section' + i,
+  time: [],
+  codecs: ['mp4', 'webm'],
+  skip: false
+}]
+```
+
+An array of objects containing the time range we want to cut our video to.
+
+If a `name` is specified, then output video clip will be named with this name. e.g. `super-movie.mp4`
+
+If a `name` is not specified, then output video clip will be named with default pattern `section<index>`. e.g. `section0.mp4`, `section1.mp4`, etc.
+
+If a `time` is specified, then the video clip will be cut from time specified in first value and end at time specified at second value.
+
+If a `time` is not specified, then task will encode full length source file into specified codecs with specified name.
+
+If `time` specified as `time: [1, 10]`, then the video clip will start at 1sec and end at 10sec.
+
+If `time` specified as `time: [10]` or `time: 10`, then the video clip will start at 10sec and end at the end of source file.
+
+If `codecs` is specified, then the video clip will be encoded to specified format.
+
+If `codecs` is not specified, then the video clip will be encoded to default format list `['mp4', 'webm']`.
+
+If `codecs` is specified as `codecs: 'json'`, then the video clip will be encoded to only `json` format.
+
+If `skip` is specified, then section will be excluded from converting batch.
+
+Example:
+
+```js
+[{
+  time: [0, 1.5]
+}, {
+  time: [1.5, 2.2],
+  codecs: ['json', 'webm']
+}, {
+  time: [1.5, 3]
+}, {
+  name: 'last_part',
+  time: 3,
+  codecs: 'mp4'
+}, {
+  name: 'skipped_section',
+  time: 4,
+  skip: true
+}]
+```
+
+#### options.emptyDestBeforeStart
+Type: `Boolean`
+
+Default value:
+
+```js
+false
+```
+
+The value that specifies should task empty destination folder before start encoding.
+
+### Usage Examples
+
+#### Default Options
+The default options will produce a .mp4 and a .webm version of source file. They will be named `section0.mp4` and `section0.webm`.
+
+```js
+grunt.initConfig({
+  video_slicer: {
+    options: {},
+    my_target: {
+      src: 'src/video.mp4',
+      dest: 'dest_folder/'
+    }
+  }
+})
+```
+
+#### Custom Options
+In this example, we specify sections and a source path. We'll generate 5 video files. First, third and forth files will be encoded to `mp4` and `webm` formats only. Second file will be encoded into json array with base64 encoded frames. Last file with `full_video` name will be full length source file encoded into `mp4`, `webm` and `json` formats.
+
+```js
+grunt.initConfig({
+  video_slicer: {
+    options: {
+      sections: [{
+        time: [0, 1.5]
+      }, {
+        time: [1.5, 2.2],
+        codecs: 'json'
+      }, {
+        time: [1.5, 3]
+      }, {
+        time: 3
+      }, {
+        name: 'full_video',
+        codecs: ['mp4', 'webm', 'json'],
+      }],
+      emptyDestBeforeStart: true
+    },
+    video: {
+      src: 'videos/video.mp4',
+      dest: 'sections/'
+  }
+}
+})
+```
+
+## Release History
+
+*0.2.0*
+
+* Section's `encodeToJSON` parameter changed to `json` codec format.
+* Section's `name` is not required parameter anymore.
+* Made refactoring to simplify code and bug fixes.
+
+*0.1.1*
+
+* Section's `sequence` time array changed to section's `encodeToJSON` parameter.
+
+*0.1.0*
+
+* Initial Release.

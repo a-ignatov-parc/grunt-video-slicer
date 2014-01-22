@@ -44,7 +44,7 @@ var fs = require('fs'),
 
 module.exports = function(grunt) {
 	var defaults = {
-			sections: [],
+			sections: [{}],
 			emptyDestBeforeStart: false,
 			encodes: {
 				webm: {
@@ -69,6 +69,10 @@ module.exports = function(grunt) {
 					'-profile': 'main',
 					'-crf': '22',
 					'-threads': '0'
+				},
+				json: {
+					'-an': '',
+					'-f': 'image2'
 				}
 			}
 		};
@@ -133,13 +137,12 @@ module.exports = function(grunt) {
 		}
 
 		this.files.forEach(function(f) {
-			options.sections.forEach(function(section) {
+			options.sections.forEach(function(section, i) {
 				var section = _.defaults(section, {
-						name: '',
+						name: 'section' + i,
 						time: [],
-						codecs: _.keys(defaults.encodes),
-						skip: false,
-						encodeToJSON: false
+						codecs: ['mp4', 'webm'],
+						skip: false
 					}),
 					srcPath = f.src[0],
 					dstPath = f.dest,
@@ -180,43 +183,58 @@ module.exports = function(grunt) {
 					section.codecs = [section.codecs];
 				}
 
-				if (section.encodeToJSON) {
-					var outPath = dstPath + section.name;
-
-					if (grunt.file.isDir(outPath)) {
-						grunt.file.delete(outPath);
-					}
-
-					addToQueue({
-						'-an': '',
-						'-ss': section.time[0],
-						'-t': section.time[1] - section.time[0],
-						'-f': 'image2'
-					}, {
-						name: section.name,
-						srcPath: srcPath,
-						dstPath: outPath,
-						sequencePath: dstPath,
-						outhPath: outPath + '/%d.jpg',
-						log: srcPath + '#t=' + section.time.join(',') + ' -> ' + outPath + '.json',
-						preprocess: function(params) {
-							var result = {
-									frames: []
-								};
-
-							grunt.file.recurse(params.sequencePath, function(abspath, rootdir, subdir, filename) {
-								result.frames[filename.split('.')[0] - 1] = util.format('data:%s;base64,%s', mime.lookup(abspath), fs.readFileSync(abspath).toString('base64'));
-							});
-							grunt.file.write(params.sequencePath + params.name + '.json', JSON.stringify(result));
-						}
-					});
-				} else if (_.isArray(section.codecs)) {
+				if (_.isArray(section.codecs)) {
 					section.codecs.forEach(function(codecName) {
 						var defaultEncodeFlags = defaults.encodes[codecName],
 							encodeFlags = _.extend({}, defaultEncodeFlags),
-							outPath = dstPath + section.name + '.' + codecName;
+							encodeParams = {
+								name: section.name,
+								srcPath: srcPath,
+								dstPath: dstPath,
+								outhPath: null,
+								log: null
+							},
+							outPath;
 
 						if (defaultEncodeFlags) {
+							switch(codecName) {
+								case 'json':
+									outPath = dstPath + section.name;
+
+									_.extend(encodeParams, {
+										dstPath: outPath,
+										sequencePath: dstPath,
+										outhPath: outPath + '/%d.jpg',
+										log: srcPath + '#t=' + section.time.join(',') + ' -> ' + outPath + '.json',
+										preprocess: function(params) {
+											var result = {
+													frames: []
+												};
+
+											grunt.file.recurse(params.sequencePath, function(abspath, rootdir, subdir, filename) {
+												result.frames[filename.split('.')[0] - 1] = util.format('data:%s;base64,%s', mime.lookup(abspath), fs.readFileSync(abspath).toString('base64'));
+											});
+											grunt.file.write(params.sequencePath + params.name + '.json', JSON.stringify(result));
+										}
+									});
+
+									if (grunt.file.isDir(outPath)) {
+										grunt.file.delete(outPath);
+									}
+									break;
+								default:
+									outPath = dstPath + section.name + '.' + codecName;
+
+									_.extend(encodeParams, {
+										outhPath: outPath,
+										log: srcPath + (hasTimeRange ? '#t=' + section.time.join(',') : '') + ' -> ' + outPath
+									});
+
+									if (grunt.file.exists(outPath)) {
+										grunt.file.delete(outPath);
+									}
+							}
+
 							// Задаем время секции для нарезки.
 							if (hasTimeRange) {
 								encodeFlags['-ss'] = section.time[0];
@@ -226,17 +244,8 @@ module.exports = function(grunt) {
 								}
 							}
 
-							if (grunt.file.exists(outPath)) {
-								grunt.file.delete(outPath);
-							}
-
-							addToQueue(encodeFlags, {
-								name: section.name,
-								srcPath: srcPath,
-								dstPath: dstPath,
-								outhPath: outPath,
-								log: srcPath + (hasTimeRange ? '#t=' + section.time.join(',') : '') + ' -> ' + outPath
-							});
+							// Добавляем задачу в очередь.
+							addToQueue(encodeFlags, encodeParams);
 						}
 					});
 				} else {

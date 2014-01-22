@@ -3,18 +3,17 @@ var fs = require('fs'),
 		video_slicer: {
 			options: {
 				sections: [{
-					name: 'section0',
 					time: [0, 1.5]
 				}, {
-					name: 'section1',
 					time: [1.5, 2.2],
-					encodeToJSON: true
+					codecs: 'json'
 				}, {
-					name: 'section2',
 					time: [1.5, 3]
 				}, {
-					name: 'section3',
 					time: 3
+				}, {
+					name: 'full_video',
+					codecs: ['mp4', 'webm', 'json'],
 				}],
 				emptyDestBeforeStart: true
 			},
