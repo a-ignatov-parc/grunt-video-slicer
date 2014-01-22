@@ -7,10 +7,13 @@ var fs = require('fs'),
 					time: [0, 1.5]
 				}, {
 					name: 'section1',
-					time: [1.5, 3],
-					sequence: [1.5, 2.2]
+					time: [1.5, 2.2],
+					encodeToJSON: true
 				}, {
 					name: 'section2',
+					time: [1.5, 3]
+				}, {
+					name: 'section3',
 					time: 3
 				}],
 				emptyDestBeforeStart: true

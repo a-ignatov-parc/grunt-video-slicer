@@ -11,9 +11,12 @@
  * 		options: {
  * 			sections: [
  * 				{
+ * 					name: 'section0-sequence',
+ * 					time: [1, 2],
+ * 					json: true
+ * 				}, {
  * 					name: 'section0',
  * 					time: [1, 17],
- * 					sequence: [1, 2],
  * 					codecs: ['mp4', 'webm']
  * 				}, {
  * 					name: 'section1',
@@ -134,14 +137,13 @@ module.exports = function(grunt) {
 				var section = _.defaults(section, {
 						name: '',
 						time: [],
-						sequence: [],
 						codecs: _.keys(defaults.encodes),
-						skip: false
+						skip: false,
+						encodeToJSON: false
 					}),
 					srcPath = f.src[0],
 					dstPath = f.dest,
-					hasTimeRange,
-					hasSectionSequence;
+					hasTimeRange;
 
 				if (section.skip) {
 					return grunt.log.writeln('Skipping: ' + section.name);
@@ -165,24 +167,6 @@ module.exports = function(grunt) {
 					hasTimeRange = true;
 				}
 
-				if (_.isArray(section.sequence)) {
-					switch(section.sequence.length) {
-						case 2:
-						case 1:
-							hasSectionSequence = true;
-							break;
-						case 0:
-							hasSectionSequence = false;
-							break;
-						default:
-							section.sequence.length = 2;
-							hasSectionSequence = true;
-					}
-				} else {
-					section.sequence = [section.sequence];
-					hasSectionSequence = true;
-				}
-
 				if (!grunt.file.exists(srcPath)) {
 					return grunt.fail.warn('Source file "' + srcPath + '" not found.');
 				}
@@ -196,8 +180,8 @@ module.exports = function(grunt) {
 					section.codecs = [section.codecs];
 				}
 
-				if (hasSectionSequence) {
-					var outPath = dstPath + section.name + '-sequence';
+				if (section.encodeToJSON) {
+					var outPath = dstPath + section.name;
 
 					if (grunt.file.isDir(outPath)) {
 						grunt.file.delete(outPath);
@@ -205,8 +189,8 @@ module.exports = function(grunt) {
 
 					addToQueue({
 						'-an': '',
-						'-ss': section.sequence[0],
-						'-t': section.sequence[1] - section.sequence[0],
+						'-ss': section.time[0],
+						'-t': section.time[1] - section.time[0],
 						'-f': 'image2'
 					}, {
 						name: section.name,
@@ -214,7 +198,7 @@ module.exports = function(grunt) {
 						dstPath: outPath,
 						sequencePath: dstPath,
 						outhPath: outPath + '/%d.jpg',
-						log: srcPath + '#sequence=' + section.sequence.join(',') + ' -> ' + outPath + '.json',
+						log: srcPath + '#t=' + section.time.join(',') + ' -> ' + outPath + '.json',
 						preprocess: function(params) {
 							var result = {
 									frames: []
@@ -223,15 +207,10 @@ module.exports = function(grunt) {
 							grunt.file.recurse(params.sequencePath, function(abspath, rootdir, subdir, filename) {
 								result.frames[filename.split('.')[0] - 1] = util.format('data:%s;base64,%s', mime.lookup(abspath), fs.readFileSync(abspath).toString('base64'));
 							});
-							grunt.file.write(params.sequencePath + params.name + '-sequence.json', JSON.stringify(result));
+							grunt.file.write(params.sequencePath + params.name + '.json', JSON.stringify(result));
 						}
 					});
-
-					// Выставляем смещение для основного ролика секции.
-					section.time[0] = section.sequence[1];
-				}
-
-				if (_.isArray(section.codecs)) {
+				} else if (_.isArray(section.codecs)) {
 					section.codecs.forEach(function(codecName) {
 						var defaultEncodeFlags = defaults.encodes[codecName],
 							encodeFlags = _.extend({}, defaultEncodeFlags),
