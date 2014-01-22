@@ -113,7 +113,7 @@ module.exports = function(grunt) {
 					}, 1000);
 
 				grunt.verbose.writeln('ffmpeg ' + ffmpegParams.join(' '));
-				grunt.log.write('Converting: ' + (params.log || params.outhPath));
+				grunt.log.write('Converting: ' + (params.log || params.outhPath).cyan);
 
 				ffmpeg.exec(ffmpegParams, function() {
 					if (typeof params.preprocess === 'function') {
