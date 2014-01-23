@@ -159,6 +159,10 @@ grunt.initConfig({
 
 ## Release History
 
+*0.2.1*
+
+* Console loging improvements
+
 *0.2.0*
 
 * Section's `encodeToJSON` parameter changed to `json` codec format.
