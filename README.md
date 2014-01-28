@@ -26,7 +26,7 @@ grunt.loadNpmTasks('grunt-video-slicer');
 
 ### Overview
 
-The `video_slicer` task will take source video and cut it in any number of video clips you defined in options. Clips will be encoded in `*.mp4` and `*.webm` to be fully supported with html5 video tag.
+The `video_slicer` task will take the source video file and cut it in any number of clips you defined in the options. Clips will be encoded in `*.mp4` and `*.webm` and optimized to be fully supported with web browser.
 
 In your project's Gruntfile, add a section named `video_slicer` to the data object passed into `grunt.initConfig()`.
 
@@ -60,27 +60,27 @@ Default value:
 }]
 ```
 
-An array of objects containing the time range we want to cut our video to.
+An array of objects containing the time range we want to cut our video into.
 
 If a `name` is specified, then output video clip will be named with this name. e.g. `super-movie.mp4`
 
 If a `name` is not specified, then output video clip will be named with default pattern `section<index>`. e.g. `section0.mp4`, `section1.mp4`, etc.
 
-If a `time` is specified, then the video clip will be cut from time specified in first value and end at time specified at second value.
+If a `time` is specified, then the video clip will be cut from time specified in the first value and will end in the time specified at second value.
 
 If a `time` is not specified, then task will encode full length source file into specified codecs with specified name.
 
-If `time` specified as `time: [1, 10]`, then the video clip will start at 1sec and end at 10sec.
+If `time` is specified as `time: [1, 10]`, then the video clip will start at 1sec and will end at 10sec.
 
-If `time` specified as `time: [10]` or `time: 10`, then the video clip will start at 10sec and end at the end of source file.
+If `time` is specified as `time: [10]` or `time: 10`, then the video clip will start at 10sec and will end at the end of the source video file.
 
-If `codecs` is specified, then the video clip will be encoded to specified format.
+If `codecs` are specified, then the video clip will be encoded to specified formats.
 
-If `codecs` is not specified, then the video clip will be encoded to default format list `['mp4', 'webm']`.
+If `codecs` are not specified, then the video clip will be encoded to default formats `['mp4', 'webm']`.
 
 If `codecs` is specified as `codecs: 'json'`, then the video clip will be encoded to only `json` format.
 
-If `skip` is specified, then section will be excluded from converting batch.
+If `skip` is specified, then the section will be excluded from the converting batch.
 
 Example:
 
@@ -108,12 +108,14 @@ Type: `Boolean`
 
 Default value: `false`
 
+If the value is specified, then task will empty the destination folder before starting encoding.
+
 The value that specifies should task empty destination folder before start encoding.
 
 ### Usage Examples
 
 #### Default Options
-The default options will produce a .mp4 and a .webm version of source file. They will be named `section0.mp4` and `section0.webm`.
+The default options will generate `.mp4` and `.webm` versions of source files. They will be named `section0.mp4` and `section0.webm`.
 
 ```js
 grunt.initConfig({
@@ -128,7 +130,7 @@ grunt.initConfig({
 ```
 
 #### Custom Options
-In this example, we specify sections and a source path. We'll generate 5 video files. First, third and forth files will be encoded to `mp4` and `webm` formats only. Second file will be encoded into json array with base64 encoded frames. Last file with `full_video` name will be full length source file encoded into `mp4`, `webm` and `json` formats.
+In this example, we specify sections and a source path. We'll generate 5 video files. First, third and forth files will be encoded to `mp4` and `webm` formats only. The second file will be encoded into json array with base64 encoded frames. The last file with `full_video` name will be full length source files encoded into `mp4`, `webm` and `json` formats.
 
 ```js
 grunt.initConfig({
