@@ -21,6 +21,7 @@
  * 				}, {
  * 					name: 'section1',
  * 					time: [19, 30],
+ * 					filters: 'grayscale',
  * 					codecs: 'mp4'
  * 				}, {
  * 					name: 'section2',
@@ -141,6 +142,7 @@ module.exports = function(grunt) {
 				var section = _.defaults(section, {
 						name: 'section' + i,
 						time: [],
+						filters: [],
 						codecs: ['mp4', 'webm'],
 						skip: false
 					}),
@@ -179,6 +181,10 @@ module.exports = function(grunt) {
 					grunt.file.delete(dstPath);
 				}
 
+				if (_.isString(section.filters)) {
+					section.filters = [section.filters];
+				}
+
 				if (_.isString(section.codecs)) {
 					section.codecs = [section.codecs];
 				}
@@ -195,6 +201,14 @@ module.exports = function(grunt) {
 								log: null
 							},
 							outPath;
+
+						section.filters.forEach(function(filter) {
+							switch(filter) {
+								case 'grayscale':
+									encodeFlags['-vf'] = 'yadif=0:0:0, hue=s=0';
+									break;
+							}
+						});
 
 						if (defaultEncodeFlags) {
 							switch(codecName) {

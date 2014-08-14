@@ -55,6 +55,7 @@ Default value:
 [{
   name: 'section' + i,
   time: [],
+  filters: [],
   codecs: ['mp4', 'webm'],
   skip: false
 }]
@@ -81,6 +82,10 @@ If `codecs` are not specified, then the video clip will be encoded to default fo
 If `codecs` is specified as `codecs: 'json'`, then the video clip will be encoded to only `json` format.
 
 If `skip` is specified, then the section will be excluded from the converting batch.
+
+If `filters` are specified, then the video clip will be encoded with applied image filters. Available filters:
+
+1. `grayscale` – will turn video black and white.
 
 Example:
 
@@ -160,6 +165,10 @@ grunt.initConfig({
 ```
 
 ## Release History
+
+*0.3.0*
+
+* Added `filters` options
 
 *0.2.1*
 
