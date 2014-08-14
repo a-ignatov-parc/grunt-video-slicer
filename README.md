@@ -166,7 +166,7 @@ grunt.initConfig({
 
 ## Release History
 
-*0.3.0*
+*0.3.2*
 
 * Added `filters` options
 
