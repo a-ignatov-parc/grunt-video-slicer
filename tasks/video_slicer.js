@@ -73,7 +73,8 @@ module.exports = function(grunt) {
 				},
 				json: {
 					'-an': '',
-					'-f': 'image2'
+					'-f': 'image2',
+					'-q:v': '1'
 				}
 			}
 		};
