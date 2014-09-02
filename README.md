@@ -166,6 +166,10 @@ grunt.initConfig({
 
 ## Release History
 
+*0.3.3*
+
+* Increased `json` encode default quality
+
 *0.3.2*
 
 * Added `filters` options
