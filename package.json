@@ -30,11 +30,11 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
+    "async": "~0.2.9",
+    "ffmpeg-node": "0.0.2",
     "grunt": "0.4.x",
     "grunt-cli": "0.1.x",
     "mime": "1.2.x",
-    "ffmpeg-node": "0.0.1",
-    "underscore": "~1.5.2",
-    "async": "~0.2.9"
+    "underscore": "~1.5.2"
   }
 }
