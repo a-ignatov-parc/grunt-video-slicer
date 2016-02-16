@@ -6,7 +6,7 @@
     "ffmpeg",
     "video"
   ],
-  "version": "0.3.4",
+  "version": "0.3.5",
   "homepage": "https://github.com/a-ignatov-parc/grunt-video-slicer",
   "author": {
     "name": "Anton Ignatov",
